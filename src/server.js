@@ -1,6 +1,8 @@
 'use strict';
 
 const Hapi = require('@hapi/hapi');
+const inert = require('@hapi/inert');
+const path = require('path');
 
 const init = async () => {
   const server = Hapi.server({
@@ -8,10 +10,16 @@ const init = async () => {
     host: 'localhost',
   });
 
+  await server.register(inert);
+
   server.route({
-    method: 'get',
-    path: '/',
-    handler: () => 'Hello World!',
+    method: 'GET',
+    path: '/{param*}',
+    handler: {
+      directory: {
+        path: path.resolve(__dirname, '../public'),
+      },
+    },
   });
 
   await server.start();
