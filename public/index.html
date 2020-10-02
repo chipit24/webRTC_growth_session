@@ -6,11 +6,15 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
   <title>Conference App</title>
   <script type="module" async src="./index.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 <h1 class="title">Conference App</h1>
-<video autoplay class="remote-video" id="remote-video"></video>
-<video autoplay muted class="local-video" id="local-video"></video>
+
+<div class="videos-container">
+  <video autoplay class="remote-video" id="remote-video"></video>
+  <video autoplay muted class="local-video" id="local-video"></video>
+</div>
 </body>
 </html>

@@ -1,7 +1,26 @@
 html {
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+html {
     font-size: 14px;
 }
 
 .title {
     font-size: 2rem;
+}
+
+.videos-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+}
+
+.local-video,
+.remote-video {
+    width: 100%;
 }
