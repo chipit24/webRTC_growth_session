@@ -3,8 +3,8 @@ const peerConnection = new RTCPeerConnection();
 
 console.log('opening websocket connection');
 
-webSocketConnection.addEventListener('error', () => {
-  console.log('error');
+webSocketConnection.addEventListener('error', event => {
+  console.warn('WebSocket error: ', event);
 });
 
 webSocketConnection.addEventListener('open', () => {
@@ -46,7 +46,12 @@ async function streamLocalVideo() {
   let stream = null;
 
   try {
-    stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+    console.log('getting stream');
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: false,
+    });
+    console.log('got stream');
     stream
       .getTracks()
       .forEach(track => peerConnection.addTrack(track, stream));
@@ -58,23 +63,28 @@ async function streamLocalVideo() {
     webSocketConnection.send(JSON.stringify({ offer }));
     console.log('Sent offer, setting peerConnection.setLocalDescription');
   } catch (error) {
-    console.warn(error.message);
+    console.warn('Error starting local video', error.message);
   }
 }
 
 streamLocalVideo();
+console.log('streamLocalVideo');
 
 // peerConnection.ontrack = function onTrack({ streams: [stream] }) {
 //   const remoteVideo = document.getElementById('remote-video');
 //   remoteVideo.srcObject = stream;
 // };
 
-const remoteStream = new MediaStream();
-const remoteVideo = document.getElementById('remote-video');
-remoteVideo.srcObject = remoteStream;
+// const remoteStream = new MediaStream();
+// const remoteVideo = document.getElementById('remote-video');
+// remoteVideo.srcObject = remoteStream;
 
-peerConnection.addEventListener('track', async event => {
-  remoteStream.addTrack(event.track, remoteStream);
+peerConnection.addEventListener('track', event => {
+  // remoteStream.addTrack(event.track, remoteStream);
+  const remoteVideo = document.getElementById('remote-video');
+  remoteVideo.srcObject = event.streams[0];
+
+  console.log('peerConnection track event', event);
 });
 
 peerConnection.addEventListener('icecandidate', event => {
