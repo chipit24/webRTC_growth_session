@@ -12,15 +12,38 @@ html {
 
 .title {
     font-size: 2rem;
+    text-align: center;
 }
 
 .videos-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-gap: 1rem;
+    margin: 1rem;
 }
 
-.local-video,
-.remote-video {
+.video--local,
+.video--remote {
     width: 100%;
+}
+
+.video-wrapper--local,
+.video-wrapper--remote {
+    position: relative;
+    border: 2px solid grey;
+}
+
+.video-wrapper--local {
+    border: 2px solid green;
+}
+
+.video-wrapper--local::after {
+    content: 'You';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-bottom-right-radius: 5px;
+    background: green;
+    color: white;
+    padding: 0.25rem 0.5rem;
 }

@@ -13,8 +13,13 @@
 <h1 class="title">Conference App</h1>
 
 <div class="videos-container">
-  <video autoplay class="remote-video" id="remote-video"></video>
-  <video autoplay muted class="local-video" id="local-video"></video>
+  <div class="video-wrapper--local">
+    <video autoplay playsinline muted class="video--local" id="local-video"></video>
+  </div>
+
+  <div class="video-wrapper--remote">
+    <video autoplay playsinline class="video--remote" id="remote-video"></video>
+  </div>
 </div>
 </body>
 </html>
