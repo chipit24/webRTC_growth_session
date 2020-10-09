@@ -28,28 +28,48 @@ body {
     margin: 1rem;
 }
 
+.video--local {
+    /* mirror the local video */
+    transform: rotateY(180deg);
+}
+
 .video--local,
 .video--remote {
     width: 100%;
+    border: 2px solid grey;
+}
+
+.video--local {
+    border: 2px solid green;
 }
 
 .video-wrapper--local,
 .video-wrapper--remote {
     position: relative;
-    border: 2px solid grey;
-}
-
-.video-wrapper--local {
-    border: 2px solid green;
+    display: flex;
+    flex-direction: column;
 }
 
 .video-wrapper--local::after {
-    content: 'You';
+    opacity: 0.8;
+    content: 'You (Robert Komaromi)';
     position: absolute;
     top: 0;
     left: 0;
     border-bottom-right-radius: 5px;
     background: green;
     color: white;
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.button {
+    background: #ecd8d8;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid #c7b2b2;
+    cursor: pointer;
+}
+
+.button::hover {
+
 }
