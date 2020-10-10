@@ -21,15 +21,15 @@ webSocketConnection.addEventListener('message', async messageEvent => {
   }
 
   if (offer) {
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+    await peerConnection.setRemoteDescription(offer);
     const answerToOffer = await peerConnection.createAnswer();
-    await peerConnection.setLocalDescription(new RTCSessionDescription(answerToOffer));
+    await peerConnection.setLocalDescription(answerToOffer);
     webSocketConnection.send(JSON.stringify({ answer: answerToOffer }));
     console.log('Recieved offer, sendinig answer, setting peerConnection.setLocalDescription');
   }
 
   if (answer) {
-    await peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+    await peerConnection.setRemoteDescription(answer);
     console.log('Recieved answer, setting peerConnection.setRemoteDescription');
   }
 
@@ -61,14 +61,7 @@ async function streamLocalVideo() {
 
 streamLocalVideo();
 
-// peerConnection.ontrack = function onTrack({ streams: [stream] }) {
-//   const remoteVideo = document.getElementById('remote-video');
-//   remoteVideo.srcObject = stream;
-// };
-
-// const remoteStream = new MediaStream();
 peerConnection.addEventListener('track', event => {
-  // remoteStream.addTrack(event.track, remoteStream);
   const remoteVideo = document.getElementById('remote-video');
 
   if (remoteVideo.srcObject) {
@@ -76,8 +69,6 @@ peerConnection.addEventListener('track', event => {
   }
 
   remoteVideo.srcObject = event.streams[0];
-
-  console.log('peerConnection track event', event);
 });
 
 peerConnection.addEventListener('negotiationneeded', async () => {
@@ -87,11 +78,11 @@ peerConnection.addEventListener('negotiationneeded', async () => {
 });
 
 peerConnection.addEventListener('icecandidate', event => {
-  console.log('icecandidate', event.candidate);
-  if (event.candidate) {
-    webSocketConnection.send(JSON.stringify({ iceCandidate: event.candidate }));
-    console.log('sending iceCandidate');
+  if (!event.candidate) {
+    return;
   }
+
+  webSocketConnection.send(JSON.stringify({ iceCandidate: event.candidate }));
 });
 
 peerConnection.addEventListener('connectionstatechange', () => {
@@ -100,7 +91,6 @@ peerConnection.addEventListener('connectionstatechange', () => {
     console.log('peer connected!');
   }
 });
-
 
 document.getElementById('stop-video').addEventListener('click', async () => {
   // console.log('videoSender', videoSender);
