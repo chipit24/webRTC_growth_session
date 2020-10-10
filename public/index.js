@@ -63,11 +63,6 @@ streamLocalVideo();
 
 peerConnection.addEventListener('track', event => {
   const remoteVideo = document.getElementById('remote-video');
-
-  if (remoteVideo.srcObject) {
-    return;
-  }
-
   remoteVideo.srcObject = event.streams[0];
 });
 
@@ -92,28 +87,26 @@ peerConnection.addEventListener('connectionstatechange', () => {
   }
 });
 
+function muteVideo() {
+  localStream.getVideoTracks()[0].stop();
+  peerConnection.removeTrack(videoSender);
+}
+
+async function unmuteVideo() {
+  const mediaStreamConstraints = { video: true, audio: true };
+  localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
+  document.getElementById('local-video').srcObject = localStream;
+  videoSender = peerConnection.addTrack(localStream.getVideoTracks()[0], localStream);
+}
+
+let videoMuted = false;
 document.getElementById('stop-video').addEventListener('click', async () => {
-  // console.log('videoSender', videoSender);
-  try {
-    // peerConnection.removeTrack(videoSender);
-    // localStream.getVideoTracks()[0].enabled = false;
-
-    console.log('Before stop getSenders', peerConnection.getSenders());
-    // console.log(await peerConnection.getStats(localStream.getVideoTracks()[0]));
-    localStream.getVideoTracks()[0].stop();
-    peerConnection.removeTrack(videoSender);
-    // await videoSender.replaceTrack(null);
-    setTimeout(() => {
-      console.log('Stopped video track');
-      console.log('Stopped video track getSenders', peerConnection.getSenders());
-      // console.log(await peerConnection.getStats(localStream.getVideoTracks()[0]));
-    }, 1000);
-
-    // peerConnection.removeTrack(audioSender);
-    // localStream.getAudioTracks()[0].enabled = false;
-    localStream.getAudioTracks()[0].stop();
-    // peerConnection.close();
-  } catch (error) {
-    console.log('Error stopping your video: ', error);
+  if (videoMuted) {
+    await unmuteVideo();
+    videoMuted = false;
+    return;
   }
+
+  await muteVideo();
+  videoMuted = true;
 });
