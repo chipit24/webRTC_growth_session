@@ -77,8 +77,8 @@ peerConnection.addEventListener('track', event => {
 
 peerConnection.addEventListener('negotiationneeded', async () => {
   const offer = await peerConnection.createOffer();
-  await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-  webSocketConnection.send(JSON.stringify({ offer }));
+  await peerConnection.setLocalDescription(offer);
+  webSocketConnection.send(JSON.stringify({ offer: peerConnection.localDescription }));
 });
 
 peerConnection.addEventListener('icecandidate', event => {
