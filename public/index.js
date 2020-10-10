@@ -54,12 +54,6 @@ async function streamLocalVideo() {
 
     videoSender = peerConnection.addTrack(localStream.getVideoTracks()[0], localStream);
     audioSender = peerConnection.addTrack(localStream.getAudioTracks()[0], localStream);
-
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
-
-    webSocketConnection.send(JSON.stringify({ offer }));
-    console.log('Sent offer, setting peerConnection.setLocalDescription');
   } catch (error) {
     console.warn('Error starting local video', error.message);
   }
@@ -79,6 +73,12 @@ peerConnection.addEventListener('track', event => {
   remoteVideo.srcObject = event.streams[0];
 
   console.log('peerConnection track event', event);
+});
+
+peerConnection.addEventListener('negotiationneeded', async () => {
+  const offer = await peerConnection.createOffer();
+  await peerConnection.setLocalDescription(new RTCSessionDescription(offer));
+  webSocketConnection.send(JSON.stringify({ offer }));
 });
 
 peerConnection.addEventListener('icecandidate', event => {
