@@ -67,9 +67,14 @@ streamLocalVideo();
 // };
 
 // const remoteStream = new MediaStream();
-const remoteVideo = document.getElementById('remote-video');
 peerConnection.addEventListener('track', event => {
   // remoteStream.addTrack(event.track, remoteStream);
+  const remoteVideo = document.getElementById('remote-video');
+
+  if (remoteVideo.srcObject) {
+    return;
+  }
+
   remoteVideo.srcObject = event.streams[0];
 
   console.log('peerConnection track event', event);
