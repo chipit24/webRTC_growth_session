@@ -24,7 +24,7 @@ webSocketConnection.addEventListener('message', async messageEvent => {
     await peerConnection.setRemoteDescription(offer);
     const answerToOffer = await peerConnection.createAnswer();
     await peerConnection.setLocalDescription(answerToOffer);
-    webSocketConnection.send(JSON.stringify({ answer: answerToOffer }));
+    webSocketConnection.send(JSON.stringify({ answer: peerConnection.localDescription }));
     console.log('Recieved offer, sendinig answer, setting peerConnection.setLocalDescription');
   }
 
