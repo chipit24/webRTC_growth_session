@@ -1,20 +1,16 @@
 const webSocketConnection = new WebSocket('ws://localhost:3000');
 const peerConnection = new RTCPeerConnection();
 
-console.log('opening websocket connection');
-
 webSocketConnection.addEventListener('error', event => {
   console.warn('WebSocket error: ', event);
 });
 
 webSocketConnection.addEventListener('open', () => {
-  console.log('websocket connection open');
+  console.log('Websocket connection open');
 });
 
 webSocketConnection.addEventListener('message', async messageEvent => {
-  const {
-    text, offer, answer, iceCandidate,
-  } = JSON.parse(messageEvent.data);
+  const { text, offer, answer, iceCandidate } = JSON.parse(messageEvent.data);
 
   if (text) {
     console.log(text);
@@ -43,19 +39,17 @@ webSocketConnection.addEventListener('message', async messageEvent => {
 });
 
 let localStream = null;
-let videoSender = null;
-let audioSender = null;
 
 async function streamLocalVideo() {
   try {
-    const mediaStreamConstraints = { video: true, audio: true };
+    const mediaStreamConstraints = { video: true };
     localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
     document.getElementById('local-video').srcObject = localStream;
+    peerConnection.addTrack(localStream.getVideoTracks()[0], localStream);
 
-    videoSender = peerConnection.addTrack(localStream.getVideoTracks()[0], localStream);
-    audioSender = peerConnection.addTrack(localStream.getAudioTracks()[0], localStream);
+    console.log('streamLocalVideo: ', peerConnection.getSenders()[0]);
   } catch (error) {
-    console.warn('Error starting local video', error.message);
+    console.warn('Error starting local video: ', error.message);
   }
 }
 
@@ -81,22 +75,24 @@ peerConnection.addEventListener('icecandidate', event => {
 });
 
 peerConnection.addEventListener('connectionstatechange', () => {
-  console.log('peer connection changed');
+  console.log('Peer connection changed');
   if (peerConnection.connectionState === 'connected') {
-    console.log('peer connected!');
+    console.log('Peer connected');
   }
 });
 
 function muteVideo() {
   localStream.getVideoTracks()[0].stop();
-  peerConnection.removeTrack(videoSender);
+  peerConnection.removeTrack(peerConnection.getSenders()[0]);
 }
 
 async function unmuteVideo() {
-  const mediaStreamConstraints = { video: true, audio: true };
+  const mediaStreamConstraints = { video: true };
   localStream = await navigator.mediaDevices.getUserMedia(mediaStreamConstraints);
   document.getElementById('local-video').srcObject = localStream;
-  videoSender = peerConnection.addTrack(localStream.getVideoTracks()[0], localStream);
+  await peerConnection.getSenders()[0].replaceTrack(localStream.getVideoTracks()[0]);
+  peerConnection.getSenders()[0].setStreams(localStream);
+  peerConnection.getTransceivers()[0].direction = 'sendrecv';
 }
 
 let videoMuted = false;
