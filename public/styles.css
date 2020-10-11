@@ -80,3 +80,7 @@ body {
     border-bottom: 1px solid #c7b2b2;
     cursor: pointer;
 }
+
+.video-actions {
+    margin-top: 1rem;
+}
