@@ -19,5 +19,6 @@ module.exports = {
     strict: 'off',
     'no-console': 'off',
     'arrow-parens': ['error', 'as-needed'],
+    'object-curly-newline': ['error', { 'consistent': true }]
   },
 };
