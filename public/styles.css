@@ -10,22 +10,31 @@ html {
     font-size: 14px;
 }
 
+html, body {
+    height: 100vh;
+}
+
 /* Font setting courtesy of https://css-tricks.com/snippets/css/better-helvetica/ */
 body {
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 300;
 }
 
-.title {
+.header {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 2rem;
-    text-align: center;
 }
 
 .videos-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-rows: repeat(auto-fit, minmax(200px, 100%));
     grid-gap: 1rem;
-    margin: 1rem;
+    padding: 1rem;
+    height: calc(100% - 50px);
 }
 
 .video--local {
@@ -36,7 +45,9 @@ body {
 .video--local,
 .video--remote {
     width: 100%;
+    height: 100%;
     border: 2px solid grey;
+    background: black;
 }
 
 .video--local {
