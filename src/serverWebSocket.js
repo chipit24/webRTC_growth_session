@@ -10,11 +10,6 @@ module.exports = function initWsServer(server) {
       .filter(client => client.readyState === NodeWebSocket.OPEN)
       .filter(client => client !== ws)
       .forEach(client => {
-        console.log('Sending message to all clients');
-        console.log('type', typeof message);
-        console.log('======\n');
-        console.log(message);
-        console.log('======\n');
         client.send(message);
       });
   }
